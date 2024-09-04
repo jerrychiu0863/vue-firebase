@@ -8,6 +8,9 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { router } from "../router";
 
 const x = ref(0);
 const y = ref(0);
@@ -17,12 +20,29 @@ const form = ref({
   content: "",
   done: true,
 });
+const currentUser = ref({
+  email: "",
+  id: "",
+});
 // onMounted(() => {
 //   window.addEventListener("mousemove", (e) => {
 //     x.value = e.pageX;
 //     y.value = e.pageY;
 //   });
 // });
+
+const handleSignOut = () => {
+  signOut(auth)
+    .then(() => {
+      // Sign-out successful.
+      console.log("Sign out");
+      router.push("/login");
+    })
+    .catch((error) => {
+      // An error happened.
+      console.error("Error signing out");
+    });
+};
 
 onMounted(() => {
   // create a listener for real-time updates
@@ -37,6 +57,17 @@ onMounted(() => {
       dbWords.push(word);
     });
     words.value = dbWords;
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      currentUser.value.email = user.email;
+    } else {
+      // User is signed out
+      // ...
+    }
   });
 });
 
@@ -106,12 +137,22 @@ const handleDelete = async (id) => {
       </div>
     </div>
     <div class="w-1/5 text-white p-4 max-h-dvh overflow-y-auto">
-      <div class="mb-4">
+      <div>
+        <p>User : {{ currentUser.email }}</p>
+        <p>Id : {{ currentUser.id }}</p>
+      </div>
+      <div class="mb-4 flex justify-between">
         <button
           class="bg-blue-900 px-4 py-2 rounded border border-gray-600"
           @click="shuffle"
         >
           Suffle Voculabury
+        </button>
+        <button
+          @click="handleSignOut"
+          class="border border-gray-600 px-4 py-2 rounded"
+        >
+          Log out
         </button>
       </div>
       <div class="grid grid-cols-1 gap-4">
