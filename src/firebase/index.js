@@ -10,7 +10,7 @@ import { getAuth } from "firebase/auth";
 //     ? import.meta.env.VITE_FIREBASE_API_KEY
 //     : "";
 // Your web app's Firebase configuration
-console.log(import.meta.env.VITE_FIREBASE_API_KEY);
+// console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "vue-firebase-51d01.firebaseapp.com",
