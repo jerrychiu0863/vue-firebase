@@ -175,7 +175,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-dvw h-dvh bg-gray-900 flex divide-x divide-gray-600">
+  <div class="w-dvw h-dvh bg-gray-900 flex md:divide-x divide-gray-600">
     <div class="hidden md:block w-4/5 text-white max-h-dvh">
       <!-- <button @click="addToCollection">Add to New Collection</button> -->
       <div class="h-[10dvh] p-4 flex items-center pb-0">

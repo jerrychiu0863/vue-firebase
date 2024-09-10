@@ -30,7 +30,9 @@ const handleSumbit = () => {
 
 <template>
   <div class="bg-gray-900 mw-dvw h-dvh bg-gray-900 grid place-content-center">
-    <div class="text-white w-[25dvw] bg-gray-800 p-8 rounded-lg">
+    <div
+      class="text-white min-w-[350px] w-[90dvw] md:w-[25dvw] bg-gray-800 p-8 rounded-lg"
+    >
       <form @submit.prevent="handleSumbit">
         <input
           v-model="form.email"
