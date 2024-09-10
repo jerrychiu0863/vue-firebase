@@ -12,7 +12,7 @@ import { getAuth } from "firebase/auth";
 // Your web app's Firebase configuration
 console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 const firebaseConfig = {
-  apiKey: "AIzaSyBLVHQ7tW2o3VRZCvoH2wWyfhOlj3HLhkY",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "vue-firebase-51d01.firebaseapp.com",
   projectId: "vue-firebase-51d01",
   storageBucket: "vue-firebase-51d01.appspot.com",
