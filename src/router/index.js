@@ -3,7 +3,9 @@ import HomeView from "../views/HomeView.vue";
 import AddWordView from "../views/AddWordView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
+import TestView from "../views/TestView.vue";
 import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,6 +14,9 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: {
+        requireAuth: true,
+      },
     },
     {
       path: "/add-word",
@@ -28,8 +33,41 @@ const router = createRouter({
       name: "register",
       component: RegisterView,
     },
+    {
+      path: "/test",
+      name: "test",
+      component: TestView,
+    },
   ],
 });
-console.log(auth);
+
+// const getCurrentUse = () => {
+//   return new Promise((resolve, reject) => {
+//     const removeListener = onAuthStateChanged(
+//       auth,
+//       (user) => {
+//         removeListener();
+//         resolve(user);
+//       },
+//       reject
+//     );
+//   });
+// };
+
+// console.log(auth);
+router.beforeEach(async (to, from, next) => {
+  // console.log(auth.currentUser);
+  await auth.authStateReady();
+  // console.log(auth.currentUser);
+  if (to.meta.requireAuth) {
+    if (auth.currentUser) {
+      next();
+    } else {
+      next("/login");
+    }
+  } else {
+    next();
+  }
+});
 
 export { router };
