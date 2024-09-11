@@ -21,6 +21,7 @@ import { auth } from "../firebase";
 import { router } from "../router";
 // Dependency
 import { v4 as uuidv4 } from "uuid";
+import { useToast } from "vue-toastification";
 
 const x = ref(0);
 const y = ref(0);
@@ -80,11 +81,13 @@ const handleAddWord = async () => {
     id: uuidv4(),
   };
 
+  const toast = useToast();
+  // Firestore
   const firestore = getFirestore();
   const docRef = doc(firestore, "todos", currentUser.value.id);
   const userDoc = await getDoc(docRef);
 
-  // Check if user exists
+  // Check whether user's document exists
   if (!userDoc.exists()) {
     // Add a new document in collection "cities"
     await setDoc(doc(db, "todos", currentUser.value.id), {
@@ -96,6 +99,7 @@ const handleAddWord = async () => {
       lists: arrayUnion(data),
     });
   }
+  toast.info("Succefully adding a new word!");
   form.value.content = "";
 };
 
@@ -281,3 +285,9 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style>
+.Vue-Toastification__toast--info {
+  background-color: #1e3a8a;
+}
+</style>

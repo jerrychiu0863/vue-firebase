@@ -7,11 +7,11 @@ import { router } from "../router";
 
 const form = ref({
   email: "",
-  passowrd: "",
+  password: "",
 });
 
 const handleSumbit = () => {
-  console.log(`${form.value.email}, ${form.value.password}`);
+  // console.log(`${form.value.email}, ${form.value.password}`);
   // console.log(data);
 
   signInWithEmailAndPassword(auth, form.value.email, form.value.password)
