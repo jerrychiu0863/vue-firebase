@@ -26,6 +26,7 @@ import { useToast } from "vue-toastification";
 const x = ref(0);
 const y = ref(0);
 const words = ref([]);
+const filteredWords = ref([]);
 const shuffledWords = ref([]);
 const currentUser = ref({
   email: "",
@@ -62,12 +63,14 @@ const shuffle = () => {
 };
 
 const handleDelete = async (word) => {
-  const confirm = window.confirm("Delete Word?");
+  const confirm = window.confirm(`Delete ${word.content}?`);
+  const toast = useToast();
   if (confirm) {
     try {
       await updateDoc(doc(db, "todos", currentUser.value.id), {
         lists: arrayRemove(word),
       });
+      toast.info(`Succeesfully deleting ${word.content}!`);
     } catch (error) {
       console.error("Error deleting word" + error);
     }
@@ -101,6 +104,11 @@ const handleAddWord = async () => {
   }
   toast.info("Succefully adding a new word!");
   form.value.content = "";
+};
+
+const handleFilter = () => {
+  filteredWords.value = words.value.filter((word) => word.type === "noun");
+  console.log(filteredWords.value);
 };
 
 onMounted(() => {
@@ -180,9 +188,10 @@ onMounted(() => {
 
 <template>
   <div class="w-dvw h-dvh bg-gray-900 flex md:divide-x divide-gray-600">
+    <!--Left-->
     <div class="hidden md:block w-4/5 text-white max-h-dvh">
       <!-- <button @click="addToCollection">Add to New Collection</button> -->
-      <div class="h-[10dvh] p-4 flex items-center pb-0">
+      <div class="h-[85px] p-2 flex items-center pb-0">
         <form
           @submit.prevent="handleAddWord"
           class="text-white rounded-lg flex items-center flex-grow"
@@ -215,7 +224,9 @@ onMounted(() => {
           </button>
         </form>
       </div>
-      <div class="grid grid-cols-4 gap-4 p-4 max-h-[90dvh] overflow-y-auto">
+      <div
+        class="grid grid-cols-4 gap-4 p-4 max-h-[calc(100dvh-85px)] overflow-y-auto"
+      >
         <div
           v-for="word in words"
           :key="word.id"
@@ -241,16 +252,19 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="w-screen md:w-1/5 text-white p-4 max-h-dvh overflow-y-auto">
-      <div class="mb-4 flex justify-between items-center">
+    <!--Right-->
+    <div
+      class="w-screen md:w-1/5 text-white p-4 pt-0 max-h-dvh overflow-y-auto"
+    >
+      <div class="mb-4 flex justify-between items-center h-[85px] pt-2">
         <p class="text-gray-300">
           <i class="pi pi-user"></i> : {{ currentUser.email }}
         </p>
         <button
           @click="handleSignOut"
-          class="border border-gray-600 py-2 px-4 rounded"
+          class="border border-gray-600 w-[40px] h-[40px] rounded-full"
         >
-          <i class="pi pi-sign-out"></i>
+          <i class="pi pi-sign-out text-sm"></i>
         </button>
         <!-- <p>Id : {{ currentUser.id }}</p> -->
       </div>
@@ -261,6 +275,12 @@ onMounted(() => {
         >
           Suffle Voculabury
         </button>
+        <!-- <button
+          @click="handleFilter"
+          class="bg-blue-900 px-4 py-2 rounded border border-gray-600"
+        >
+          Noun
+        </button> -->
       </div>
       <div class="grid grid-cols-1 gap-4">
         <div
@@ -285,9 +305,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style>
-.Vue-Toastification__toast--info {
-  background-color: #1e3a8a;
-}
-</style>

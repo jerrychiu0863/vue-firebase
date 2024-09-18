@@ -1,9 +1,9 @@
 import { createApp } from "vue";
 import Toast from "vue-toastification";
 // Styles
-import "./style.css";
 import "primeicons/primeicons.css";
 import "vue-toastification/dist/index.css";
+import "./style.css";
 // Component
 import App from "./App.vue";
 // Router

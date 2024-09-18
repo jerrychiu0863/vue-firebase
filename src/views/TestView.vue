@@ -8,6 +8,12 @@ import {
   arrayUnion,
   updateDoc,
   arrayRemove,
+  onSnapshot,
+  query,
+  getDocs,
+  where,
+  getDoc,
+  collection,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { router } from "../router";
@@ -22,6 +28,10 @@ const currentUser = ref({
   id: "",
 });
 
+const words = ref([]);
+const nouns = ref([]);
+console.log(words);
+console.log(nouns.value.length);
 const handleSumbit = async () => {
   const newWord = {
     content: word.value.content,
@@ -43,12 +53,24 @@ const handleSumbit = async () => {
 };
 
 onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       currentUser.value.email = user.email;
       currentUser.value.id = user.uid;
+      onSnapshot(doc(db, "todos", currentUser.value.id), (doc) => {
+        words.value = doc.data().lists;
+        nouns.value = doc.data().lists.filter((word) => word.type === "noun");
+        console.log("Current data: ", doc.data());
+      });
+      // const q = query(collection(db, "todos"), where("lists", "!=", []));
+      // const querySnapshot = await getDocs(q);
+      // console.log(querySnapshot);
+      // querySnapshot.forEach((doc) => {
+      //   // doc.data() is never undefined for query doc snapshots
+      //   console.log(doc.id, " => ", doc.data());
+      // });
     } else {
       // User is signed out
       // ...
@@ -79,7 +101,7 @@ onMounted(() => {
           Log In
         </button>
       </form>
-      <RouterLink to="/register">Test</RouterLink>
+      {{ nouns.length }}
     </div>
   </div>
 </template>
